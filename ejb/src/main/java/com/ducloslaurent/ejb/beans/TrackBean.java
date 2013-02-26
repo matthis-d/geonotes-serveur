@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,6 +17,9 @@ public class TrackBean implements LocalTrackBean {
 	
 	@PersistenceContext
 	private EntityManager em;
+	
+	@EJB
+	private LocalNoteBean noteBean;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -79,20 +83,26 @@ public class TrackBean implements LocalTrackBean {
 	@Override
 	public Collection<Note> getNotesFromTrack(Integer trackId) {
 		
-		return this.em.createQuery("SELECT t.notes FROM Track t WHERE t.trackId=:trackId")
-				.setParameter("trackId", trackId)
-				.getResultList();
-	}
-
-	@Override
-	public Track addNotes(Integer trackId, Collection<Note> notes) {
 		Track track = (Track)this.em.createQuery("SELECT t FROM Track t WHERE t.trackId=:id")
 				.setParameter("id", trackId)
 				.getSingleResult();
 		
+		return this.em.createQuery("SELECT n FROM Note n WHERE n.track=:track")
+				.setParameter("track", track)
+				.getResultList();
+	}
+
+	@Override
+	public Track addNotes(Integer trackId, Collection<Integer> notesIds) {
+		Track track = (Track)this.em.createQuery("SELECT t FROM Track t WHERE t.trackId=:id")
+				.setParameter("id", trackId)
+				.getSingleResult();
 		
-		for(Note note : notes) {
-			track.addNote(note);
+		for(Integer id : notesIds) {
+			Note note = (Note) this.em.createQuery("SELECT n FROM Note n WHERE n.noteId=:noteId")
+					.setParameter("noteId", id)
+					.getSingleResult();
+			note.setTrack(track);
 		}
 		
 		this.em.flush();
@@ -101,14 +111,17 @@ public class TrackBean implements LocalTrackBean {
 	}
 
 	@Override
-	public Track removeNotes(Integer trackId, Collection<Note> notes) {
+	public Track removeNotes(Integer trackId, Collection<Integer> notesIds) {
+		
 		Track track = (Track)this.em.createQuery("SELECT t FROM Track t WHERE t.trackId=:id")
 				.setParameter("id", trackId)
 				.getSingleResult();
 		
-		
-		for(Note note : notes) {
-			track.removeNote(note);
+		for(Integer id : notesIds) {
+			Note note = (Note) this.em.createQuery("SELECT n FROM Note n WHERE n.noteId=:noteId")
+					.setParameter("noteId", id)
+					.getSingleResult();
+			note.setTrack(null);
 		}
 		
 		this.em.flush();

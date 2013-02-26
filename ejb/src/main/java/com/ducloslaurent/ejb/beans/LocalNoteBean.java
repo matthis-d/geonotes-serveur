@@ -22,6 +22,6 @@ public interface LocalNoteBean {
 	
 	public void deleteNote(Integer id);
 	
-	public Collection<Track> getTracksFromNote(Integer noteId);
+	public Track getTrackFromNote(Integer noteId);
 
 }

@@ -2,7 +2,6 @@ package com.ducloslaurent.ejb.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,9 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -53,18 +49,9 @@ public class Track implements Serializable {
 	@Column(name = "updated_at")
 	@Temporal(TemporalType.DATE)
 	private Date updatedAt;
-	
-	@ManyToMany
-	@JoinTable(
-	    name="notes_tracks",
-	    joinColumns={@JoinColumn(name="track_id", referencedColumnName="track_id")},
-	    inverseJoinColumns={@JoinColumn(name="note_id", referencedColumnName="note_id")})
-	private Set<Note> notes;
 
 	public Track() {
 		super();
-		
-		this.notes = new HashSet<>();
 	}
 
 	public Track(String name, String description, String category,
@@ -76,7 +63,6 @@ public class Track implements Serializable {
 		this.distance = distance;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.notes = notes;
 	}
 
 	@XmlElement
@@ -142,23 +128,6 @@ public class Track implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	@XmlElement
-	public Set<Note> getNotes() {
-		return notes;
-	}
-
-	public void setNotes(Set<Note> notes) {
-		this.notes = notes;
-	}
-	
-	public void addNote(Note note) {
-		this.notes.add(note);
-	}
-	
-	public void removeNote(Note note) {
-		this.notes.remove(note);
-	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -172,8 +141,6 @@ public class Track implements Serializable {
 		builder.append(category);
 		builder.append(", distance=");
 		builder.append(distance);
-		builder.append(", notes=");
-		builder.append(notes);
 		builder.append("]");
 		return builder.toString();
 	}

@@ -1,5 +1,6 @@
 package com.ducloslaurent.war.rest;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.ejb.EJB;
@@ -64,7 +65,12 @@ public class TracksRest {
 	@Consumes("application/json")
 	public void addNotes(@PathParam("id") Integer id, Collection<Note> notes) {
 		
-		this.trackBean.addNotes(id, notes);
+		Collection<Integer> notesIds = new ArrayList<>();
+		for(Note note : notes){
+			notesIds.add(note.getNoteId());
+		}
+		
+		this.trackBean.addNotes(id, notesIds);
 	}
 	
 	@Path("/delete/{id}/notes")
@@ -72,7 +78,19 @@ public class TracksRest {
 	@Consumes("application/json")
 	public void removeNotes(@PathParam("id") Integer id, Collection<Note> notes) {
 		
-		this.trackBean.removeNotes(id, notes);
+		Collection<Integer> notesIds = new ArrayList<>();
+		for(Note note : notes){
+			notesIds.add(note.getNoteId());
+		}
+		
+		this.trackBean.removeNotes(id, notesIds);
+	}
+	
+	@Path("/{id}/notes")
+	@GET
+	@Produces("application/json")
+	public Collection<Note> getNotesFromTrack(@PathParam("id") Integer trackId) {
+		return this.trackBean.getNotesFromTrack(trackId);
 	}
 
 }

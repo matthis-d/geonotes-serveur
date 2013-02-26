@@ -2,7 +2,6 @@ package com.ducloslaurent.ejb.beans;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -37,7 +36,7 @@ public class NoteBean implements LocalNoteBean {
 	public Note createNewNote(String name, String description,
 			String category, Float latitude, Float longitude) {
 		
-		Note note = new Note(name, description, category, latitude, longitude, new Date(), new Date(), new HashSet<Track>());
+		Note note = new Note(name, description, category, latitude, longitude, new Date(), new Date(), null);
 		this.em.persist(note);
 		this.em.flush();
 		
@@ -75,13 +74,12 @@ public class NoteBean implements LocalNoteBean {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Track> getTracksFromNote(Integer noteId) {
+	public Track getTrackFromNote(Integer noteId) {
 		
-		return this.em.createQuery("SELECT n.tracks FROM Note n WHERE n.noteId=:noteId")
+		return (Track)this.em.createQuery("SELECT n.tracks FROM Note n WHERE n.noteId=:noteId")
 				.setParameter("noteId", noteId)
-				.getResultList();
+				.getSingleResult();
 	}
 
 }

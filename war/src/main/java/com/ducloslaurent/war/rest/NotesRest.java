@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 
 import com.ducloslaurent.ejb.beans.LocalNoteBean;
 import com.ducloslaurent.ejb.domain.Note;
-import com.ducloslaurent.ejb.domain.Track;
 
 @Path("/note")
 @RequestScoped
@@ -66,13 +65,6 @@ public class NotesRest {
 	@DELETE
 	public void removeNote(@PathParam("id") Integer id) {
 		this.noteBeans.deleteNote(id);
-	}
-	
-	@Path("/tracks/{id}")
-	@GET
-	@Produces("application/json")
-	public Collection<Track> getTracksFromNote(@PathParam("id") Integer noteId) {
-		return this.noteBeans.getTracksFromNote(noteId);
 	}
 
 }

@@ -2,15 +2,13 @@ package com.ducloslaurent.ejb.domain;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -56,18 +54,16 @@ public class Note implements Serializable{
 	@Temporal(TemporalType.DATE)
 	private Date updatedAt;
 	
-	@ManyToMany(mappedBy = "notes")
-	private Set<Track> tracks;
+	@ManyToOne
+	private Track track;
 
 	public Note() {
 		super();
-		
-		this.tracks = new HashSet<>();
 	}
 
 	public Note(String name, String description, String category,
 			Float latitude, Float longitude, Date createdAt, Date updatedAt,
-			Set<Track> tracks) {
+			Track track) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -76,7 +72,7 @@ public class Note implements Serializable{
 		this.longitude = longitude;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
-		this.tracks = tracks;
+		this.track = track;
 	}
 
 	@XmlElement
@@ -152,20 +148,12 @@ public class Note implements Serializable{
 	}
 
 	@XmlElement
-	public Set<Track> getTracks() {
-		return tracks;
+	public Track getTrack() {
+		return track;
 	}
 
-	public void setTracks(Set<Track> tracks) {
-		this.tracks = tracks;
-	}
-	
-	public void addTrack(Track track) {
-		this.tracks.add(track);
-	}
-	
-	public void removeTrack(Track track) {
-		this.tracks.remove(track);
+	public void setTrack(Track track) {
+		this.track = track;
 	}
 
 	@Override
@@ -187,8 +175,8 @@ public class Note implements Serializable{
 		builder.append(createdAt);
 		builder.append(", updatedAt=");
 		builder.append(updatedAt);
-		builder.append(", tracks=");
-		builder.append(tracks);
+		builder.append(", track=");
+		builder.append(track);
 		builder.append("]");
 		return builder.toString();
 	}

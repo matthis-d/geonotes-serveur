@@ -24,8 +24,8 @@ public interface LocalTrackBean {
 	
 	public Collection<Note> getNotesFromTrack(Integer trackId);
 	
-	public Track addNotes(Integer trackId, Collection<Note> notes);
+	public Track addNotes(Integer trackId, Collection<Integer> notesIds);
 	
-	public Track removeNotes(Integer trackId, Collection<Note> notes);
+	public Track removeNotes(Integer trackId, Collection<Integer> notesIds);
 
 }
