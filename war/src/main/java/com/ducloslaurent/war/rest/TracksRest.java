@@ -25,7 +25,6 @@ public class TracksRest {
 	@EJB
 	private LocalTrackBean trackBean;
 	
-	@Path("/all")
 	@GET
 	@Produces("application/json")
 	public Collection<Track> getAllTracks() {
@@ -33,7 +32,14 @@ public class TracksRest {
 		return this.trackBean.getAllTracks();
 	}
 	
-	@Path("/new")
+	@Path("/{id}")
+	@GET
+	@Produces("application/json")
+	public Track getOneTrack(@PathParam("id") Integer id) {
+		
+		return this.trackBean.getOneTrackById(id);
+	}
+	
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -43,7 +49,7 @@ public class TracksRest {
 				track.getDistance());
 	}
 	
-	@Path("/update/{id}")
+	@Path("/{id}")
 	@PUT
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -53,7 +59,7 @@ public class TracksRest {
 				track.getCategory(), track.getDistance());
 	}
 	
-	@Path("/remove/{id}")
+	@Path("/{id}")
 	@DELETE
 	public void removeTrack(@PathParam("id") Integer id) {
 		

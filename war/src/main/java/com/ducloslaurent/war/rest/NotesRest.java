@@ -24,7 +24,6 @@ public class NotesRest {
 	@EJB
 	private LocalNoteBean noteBeans;
 	
-	@Path("/all")
 	@GET
 	@Produces("application/json")
 	public Collection<Note> getAllNotes() {
@@ -32,7 +31,6 @@ public class NotesRest {
 		return this.noteBeans.getAllNotes();
 	}
 	
-	@Path("/new")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -50,7 +48,7 @@ public class NotesRest {
 		return this.noteBeans.getOneNoteById(id);
 	}
 	
-	@Path("/update/{id}")
+	@Path("/{id}")
 	@PUT
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -61,7 +59,7 @@ public class NotesRest {
 		
 	}
 	
-	@Path("/remove/{id}")
+	@Path("/{id}")
 	@DELETE
 	public void removeNote(@PathParam("id") Integer id) {
 		this.noteBeans.deleteNote(id);
