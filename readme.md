@@ -1,5 +1,7 @@
 # Réseaux Middlewares
 
+Ce projet a été réalisé par **Matthis Duclos** et **Alexandre Laurent**. 
+
 Ce rapport présente comment nous avons mis en place notre architecture côté serveur pour le projet et l'application Géonotes.
 
 ## Version de Java
