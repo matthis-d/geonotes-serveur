@@ -35,3 +35,55 @@ Pour ce projet, nous avons choisi d'utiliser Maven qui est un gestionnaire de d�
 Les dépendances Maven et l'architecture du projet se configurent depuis le fichier pom.xml qui se trouve à la racine du projet pour chaque partie. Nous aurons donc trois fichiers pom.xml à écrire : un pour l'EAR, un pour l'EJB et un pour le WAR. Vous trouverez ces fichiers dans le projet rendu avec ce rapport. 
 
 Pour les EJB, nous avons choisis de faire 2 classes, une pour récupérer les parcours et une autre pour gérer l'accès à la table des notes. Nous avons également créé deux classes pour représenter les données (parcours et notes). 
+
+## Entités
+
+Dans le projet de l'application Géonotes, il nous est demandé de créer des notes et des parcours, un parcours possédant plusieurs notes. Nous avons naturellement choisi de créer une entité appelée Note et une autre Track. 
+
+Le fichier de configuration de JPA (persistance.xml) fait en sorte que les tables sont automatiquement créées en base de données si elles n'existent pas mais ne les modifient pas si elles existent déjà.
+
+Ces entités sont situées dans le package `com.ducloslaurent.ejb.domain` de la partie EJB. 
+
+#### L'entité Note
+Cette entité possède pour attributs un entier qui sert d'identifiant (celui-ci est généré automatiquement), un nom, une catégorie, une description, une date d'ajout et une date de modification . Elle possède également un attribut de type ManyToOne vers l'entité parcours. Nous avons choisi ce sens en raison de difficultés rencontrées dans le sens OneToMany depuis la classe Track. 
+
+#### L'entité Track
+Cette entité représente les parcours et possède pour attributs un identifiant généré automatiquement lors de l'ajout en base de donnée, un nom, une catégorie, une description, une distance, une date d'ajout et une date de modification. 
+
+## Beans
+Comme nous possédions deux entités, nous avons choisi de créer 2 beans, chacun associé à une entité. 
+
+Nous avons créé deux interfaces de type `Local` pour les beans (`LocalNoteBean` et `LocalTrackBean`) et deux classes d'implémentation de type `Stateless` (`NoteBean`et `TrackBean`). 
+
+Ces beans permettent de faire des requêtes sur la base de données. Nous pouvons ainsi récupérer tous les parcours ou toutes les notes, un parcours ou une note en connaissant son id, faire des ajouts, des mises à jour ou encore des suppressions. Il est également possible de récupérer toutes les notes depuis l'identifiant d'un parcours, de supprimer des notes associées à un parcours ou bien d'en ajouter à un parcours. 
+
+Les EJB ainsi créés sont utilisés par le service web qui se retrouve dans le WAR déployé sur le serveur. 
+
+## Problèmes rencontrés
+Nous n'avons pas réalisé de screencast de notre application car nous n'avons pas réussi à lier la partie client avec le serveur à travers des services web. Toutefois, il est possible de tester l'application à l'aide d'un plugin sur Google Chrome que vous pouvez retrouver à cette [adresse](https://chrome.google.com/webstore/detail/simple-rest-client/fhjcajmcbmldlhcimfajhfbgofnpcjmb?hl=fr). 
+
+Et ainsi, il est possible de faire des tests sur notre serveur : 
+
+Récupération de toutes les notes :
+
+![image](images/test-rest.png)
+
+Ajout d'une note : 
+
+![image](images/post-en-rest.png)
+
+Et en base de donnée, nous retrouvons bien la note ajoutée : 
+
+![image](images/update-bdd.png)
+
+Les adresses rest pour les notes sont les suivantes : 
+
+- GET : http://localhost:8080/war/rest/note : toutes les notes
+- POST : http://localhost:8080/war/rest/note : ajout d'une note 
+- PUT : http://localhost:8080/war/rest/note/{id} : modification de la note ayant pour identifiant {id}
+- DELETE http://localhost:8080/war/rest/note/{id} : suppression de la note ayant pour identifiant {id}
+
+Nous retrouvons exactement les même chemins pour les parcours à part qu'il faut remplacer note par track. Nous avons également ajouté deux chemins supplémentaires qui sont : 
+
+- POST : http://localhost:8080/war/rest/track/add/{id}/notes : ajoute des notes au parcours ayant l'identifiant {id}. Le post doit avoir en corps un object json de la forme : `{"note": [{"name": "note1" ...}, {"name": "note2" ... }]}` .
+-  POST : http://localhost:8080/war/rest/track/remove/{id}/notes : supprime des notes au parcours ayant l'identifiant {id}. Le post doit avoir en corps un object json de la forme vue précédemment.
